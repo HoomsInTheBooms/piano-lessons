@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Students Spreadsheet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #444;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    tfoot {
+      background-color: #f9f9f9;
+      font-weight: bold;
+    }
+    input[type="number"] {
+      width: 100%;
+      border: none;
+      text-align: right;
+      background: transparent;
+    }
+    input:focus {
+      outline: none;
+    }
+    .add-row-btn {
+      margin: 10px 0;
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .add-row-btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>Music Students Management</h1>
+  <table id="studentsTable">
+    <thead>
+      <tr>
+        <th>Student Name</th>
+        <th>Payment ($)</th>
+        <th>Lesson Schedule</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td contenteditable="true">John Doe</td>
+        <td><input type="number" value="100" oninput="updateTotal()" /></td>
+        <td contenteditable="true">Monday 10 AM</td>
+      </tr>
+      <tr>
+        <td contenteditable="true">Jane Smith</td>
+        <td><input type="number" value="120" oninput="updateTotal()" /></td>
+        <td contenteditable="true">Wednesday 3 PM</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>Total:</td>
+        <td id="totalPayments">$220</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+  <button class="add-row-btn" onclick="addRow()">Add New Student</button>
+
+  <script>
+    // Update total payments
+    function updateTotal() {
+      let total = 0;
+      const paymentCells = document.querySelectorAll('tbody input[type="number"]');
+      paymentCells.forEach(cell => {
+        const value = parseFloat(cell.value) || 0;
+        total += value;
+      });
+      document.getElementById('totalPayments').textContent = `$${total}`;
+    }
+
+    // Add a new row to the table
+    function addRow() {
+      const tableBody = document.querySelector('#studentsTable tbody');
+      const newRow = document.createElement('tr');
+
+      newRow.innerHTML = `
+        <td contenteditable="true">New Student</td>
+        <td><input type="number" value="0" oninput="updateTotal()" /></td>
+        <td contenteditable="true">Schedule</td>
+      `;
+
+      tableBody.appendChild(newRow);
+      updateTotal();
+    }
+  </script>
+</body>
+</html>
