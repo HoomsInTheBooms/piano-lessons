@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piano Lessons - Student Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: 20px auto;
+            background-color: #f9f9f9;
+        }
+
+        form div {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            color: white;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .delete-btn {
+            color: white;
+            background-color: #f44336;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <h1>Piano Lessons - Student Tracker</h1>
+
+    <form id="studentForm">
+        <div>
+            <label for="studentName">Student Name</label>
+            <input type="text" id="studentName" required>
+        </div>
+        <div>
+            <label for="payment">Weekly Payment ($)</label>
+            <input type="number" id="payment" required>
+        </div>
+        <div>
+            <label for="attendanceDate">Attendance Date</label>
+            <input type="date" id="attendanceDate" required>
+        </div>
+        <button type="submit">Add Student</button>
+    </form>
+
+    <table id="studentTable">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Weekly Payment ($)</th>
+                <th>Attendance Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        // Get references to DOM elements
+        const studentForm = document.getElementById('studentForm');
+        const studentTable = document.getElementById('studentTable').querySelector('tbody');
+
+        // Load existing data from localStorage
+        const students = JSON.parse(localStorage.getItem('students')) || [];
+
+        // Render table from localStorage data
+        const renderTable = () => {
+            studentTable.innerHTML = '';
+            students.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.name}</td>
+                    <td>${student.payment}</td>
+                    <td>${student.date}</td>
+                    <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+                `;
+                studentTable.appendChild(row);
+            });
+        };
+
+        // Handle form submission
+        studentForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Get form values
+            const studentName = document.getElementById('studentName').value;
+            const payment = document.getElementById('payment').value;
+            const attendanceDate = document.getElementById('attendanceDate').value;
+
+            // Add new student to the array
+            students.push({ name: studentName, payment, date: attendanceDate });
+
+            // Save to localStorage
+            localStorage.setItem('students', JSON.stringify(students));
+
+            // Render updated table
+            renderTable();
+
+            // Clear form
+            studentForm.reset();
+        });
+
+        // Handle delete actions
+        studentTable.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-btn')) {
+                const index = e.target.dataset.index;
+                students.splice(index, 1);
+
+                // Save updated list to localStorage
+                localStorage.setItem('students', JSON.stringify(students));
+
+                // Re-render table
+                renderTable();
+            }
+        });
+
+        // Initial render
+        renderTable();
+    </script>
+</body>
+</html>
